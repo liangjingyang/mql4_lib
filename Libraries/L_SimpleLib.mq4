@@ -10,7 +10,7 @@
 #property strict
 
 //+------------------------------------------------------------------+
-//|                                                                  |
+//| get decimals of a double                                                                |
 //+------------------------------------------------------------------+
 int decimals(double a) export {
     int num = 0;
@@ -26,111 +26,99 @@ int decimals(double a) export {
 //+------------------------------------------------------------------+
 
 double getTickValueInAccountCurrency(string symbol) export {
-   double tick_value_usd = getTickValueInUSD(symbol);
+   double tick_value = getTickValueInUSD(symbol);
    string account_currency = AccountCurrency();
-   if (account_currency == "USD") {
-      return tick_value_usd;
+   if (account_currency == "EUR") {
+      double bid_price = MarketInfo("EURUSD", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
    } else if (account_currency == "EUR") {
       double bid_price = MarketInfo("EURUSD", MODE_BID);
-      return tick_value_usd / bid_price;
-   } else if (account_currency == "EUR") {
-      double bid_price = MarketInfo("EURUSD", MODE_BID);
-      return tick_value_usd / bid_price;
+      if (bid_price > 0) return tick_value / bid_price;
    } else if (account_currency == "GBP") {
       double bid_price = MarketInfo("GBPUSD", MODE_BID);
-      return tick_value_usd / bid_price;  
+      if (bid_price > 0) return tick_value / bid_price;  
    } else if (account_currency == "AUD") {
       double bid_price = MarketInfo("AUDUSD", MODE_BID);
-      return tick_value_usd / bid_price;
-   } else {
-      return tick_value_usd;
+      if (bid_price > 0) return tick_value / bid_price;
    }
+   return tick_value;
 }
 
 double getTickValueInUSD(string symbol) export {
    double tick_value = MarketInfo(symbol, MODE_TICKVALUE);
-   if (StringLen(symbol) == 6) {
-      string second = StringSubstr(symbol, 3, 3);
-      double bid_price = 0.0;
+   double bid_price = 0.0;
+   string second = SymbolInfoString(symbol, SYMBOL_CURRENCY_PROFIT);
       
-      if (second == "USD") {
-         return(tick_value);
-         
-      } else if (second == "EUR") {
-         bid_price = MarketInfo("EURUSD", MODE_BID);
-         return tick_value * bid_price;
-      } else if (second == "GBP") {
-         bid_price = MarketInfo("GBPUSD", MODE_BID);
-         return tick_value * bid_price;
-      } else if (second == "AUD") {
-         bid_price = MarketInfo("AUDUSD", MODE_BID);
-         return tick_value * bid_price;
-      } else if (second == "NZD") {
-         bid_price = MarketInfo("NZDUSD", MODE_BID);
-         return tick_value * bid_price;
-         
+   if (second == "EUR") {
+      bid_price = MarketInfo("EURUSD", MODE_BID);
+      if (bid_price > 0) return tick_value * bid_price;
+   } else if (second == "GBP") {
+      bid_price = MarketInfo("GBPUSD", MODE_BID);
+      if (bid_price > 0) return tick_value * bid_price;
+   } else if (second == "AUD") {
+      bid_price = MarketInfo("AUDUSD", MODE_BID);
+      if (bid_price > 0) return tick_value * bid_price;
+   } else if (second == "NZD") {
+      bid_price = MarketInfo("NZDUSD", MODE_BID);
+      if (bid_price > 0) return tick_value * bid_price;
       
-      } else if (second == "CAD") {
-         bid_price = MarketInfo("USDCAD", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "CHF") {
-         bid_price = MarketInfo("USDCHF", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "CNH") {
-         bid_price = MarketInfo("USDCNH", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "CZK") {
-         bid_price = MarketInfo("USDCZK", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "DKK") {
-         bid_price = MarketInfo("USDDKK", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "HKD") {
-         bid_price = MarketInfo("USDHKD", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "HUF") {
-         bid_price = MarketInfo("USDHUF", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "JPY") {
-         bid_price = MarketInfo("USDJPY", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "MXN") {
-         bid_price = MarketInfo("USDMXN", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "NOK") {
-         bid_price = MarketInfo("USDNOK", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "PLN") {
-         bid_price = MarketInfo("USDPLN", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "RON") {
-         bid_price = MarketInfo("USDRON", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "RUB") {
-         bid_price = MarketInfo("USDRUB", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "SEK") {
-         bid_price = MarketInfo("USDSEK", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "SGD") {
-         bid_price = MarketInfo("USDSGD", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "THB") {
-         bid_price = MarketInfo("USDTHB", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "TRY") {
-         bid_price = MarketInfo("USDTRY", MODE_BID);
-         return tick_value / bid_price;
-      } else if (second == "ZAR") {
-         bid_price = MarketInfo("USDZAR", MODE_BID);
-         return tick_value / bid_price;
-      } else {
-         return(tick_value);
-      }
-   } else {
-      return(tick_value);
-   }
    
+   } else if (second == "CAD") {
+      bid_price = MarketInfo("USDCAD", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "CHF") {
+      bid_price = MarketInfo("USDCHF", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "CNH") {
+      bid_price = MarketInfo("USDCNH", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "CZK") {
+      bid_price = MarketInfo("USDCZK", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "DKK") {
+      bid_price = MarketInfo("USDDKK", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "HKD") {
+      bid_price = MarketInfo("USDHKD", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "HUF") {
+      bid_price = MarketInfo("USDHUF", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "JPY") {
+      bid_price = MarketInfo("USDJPY", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "MXN") {
+      bid_price = MarketInfo("USDMXN", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "NOK") {
+      bid_price = MarketInfo("USDNOK", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "PLN") {
+      bid_price = MarketInfo("USDPLN", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "RON") {
+      bid_price = MarketInfo("USDRON", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "RUB") {
+      bid_price = MarketInfo("USDRUB", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "SEK") {
+      bid_price = MarketInfo("USDSEK", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "SGD") {
+      bid_price = MarketInfo("USDSGD", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "THB") {
+      bid_price = MarketInfo("USDTHB", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "TRY") {
+      bid_price = MarketInfo("USDTRY", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   } else if (second == "ZAR") {
+      bid_price = MarketInfo("USDZAR", MODE_BID);
+      if (bid_price > 0) return tick_value / bid_price;
+   }
+   return(tick_value);
 }
 
 
@@ -208,6 +196,9 @@ double normalizeLots(string symbol, double lots) export {
    double lot_step = MarketInfo(symbol, MODE_LOTSTEP);
    int lot_digits = decimals(lot_step);
    double new_lots = NormalizeDouble(lots, lot_digits);
+   if (new_lots > lots) {
+      new_lots -= lot_step;
+   }
    if (new_lots > max_lot) {
       new_lots = max_lot;
    }
@@ -222,6 +213,19 @@ double normalizePrice(string symbol, double price) export {
 double priceMovePoint(string symbol, double price, double point) export {
    int digits = (int) MarketInfo(symbol, MODE_DIGITS);
    double tick_size = MarketInfo(symbol, MODE_TICKSIZE);
+   return NormalizeDouble(price + point * tick_size, digits);
+}
+
+
+double priceMovePointMoreThanStopLevel(string symbol, double price, double point) export {
+   double stop_level = MarketInfo(symbol, MODE_STOPLEVEL);
+   int digits = (int) MarketInfo(symbol, MODE_DIGITS);
+   double tick_size = MarketInfo(symbol, MODE_TICKSIZE);
+   if (point > 0) {
+      point = MathMax(stop_level, point);   
+   } else if (point < 0) {
+      point = MathMin(-stop_level, point);
+   }
    return NormalizeDouble(price + point * tick_size, digits);
 }
    
@@ -273,17 +277,32 @@ string orderTypeToString(int order_type) export {
    }
 }
 
+string priceToString(string symbol, double price) export {
+   int digits = (int) MarketInfo(symbol, MODE_DIGITS);
+   return(DoubleToStr(price, digits));
+}
+
+string moneyToString(double money) export {
+   return(DoubleToStr(money, 2));
+}
+
 //+------------------------------------------------------------------+
 //| Notify                                                           |
 //+------------------------------------------------------------------+
-void notifyApp(string level, string message) export {
-   const string content = "#BSQD-" + level + "# " + message;
+void notifyApp(string tag, string level, string message) export {
+   const string content = "#" + tag + "-" + level + "# " + message;
    SendNotification(content);
 }
    
-void alertAndNotifyApp(string level, string message) export {
-   Alert(message);
-   notifyApp(level, message);
+void alertAndNotifyApp(string tag, string level, string message) export {
+   const string content = "#" + tag + "-" + level + "# " + message;
+   Alert(content);
+   SendNotification(content);
+}
+
+void alert(string tag, string level, string message) export {
+   const string content = "#" + tag + "-" + level + "# " + message;
+   Alert(content);
 }
 
 

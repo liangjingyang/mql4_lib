@@ -27,6 +27,9 @@
 // #import
 //+------------------------------------------------------------------+
 #import "L_SimpleLib.ex4"
+
+   int decimals(double a);
+   
    double getTickValueInAccountCurrency(string symbol);
    //double getTickValueInUSD(string symbol);
    
@@ -41,13 +44,20 @@
    double normalizeLots(string symbol, double lots);
    double normalizePrice(string symbol, double price);
    double priceMovePoint(string symbol, double price, double point);
+   double priceMovePointMoreThanStopLevel(string symbol, double price, double point);
    
    double getLotsByPointAndMoney(string symbol, double point, double money);
    double getPointByLotsAndMoney(string symbol, double lots, double money);
    double getMoneyByPointAndLots(string symbol, double point, double lots);
    
-   void notifyApp(string level, string message);
-   void alertAndNotifyApp(string level, string message);
+   string orderTypeToString(int order_type);
+   string priceToString(string symbol, double price);
+   string moneyToString(double money);
+   
+   void notifyApp(string tag, string level, string message);
+   void alertAndNotifyApp(string tag, string level, string message);
+   void alert(string tag, string level, string message);
    
    bool isOrderLong(int order_type);
+   
 #import
